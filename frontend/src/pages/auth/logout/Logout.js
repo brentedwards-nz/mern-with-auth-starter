@@ -1,11 +1,16 @@
 import { Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
 import { logOut, selectCurrentToken } from '../../../store/features/authSlice';
+import { useEffect } from 'react';
 
 const Logout = () => {
   const token = useSelector(selectCurrentToken)
+
   const dispatch = useDispatch();
-  dispatch(logOut());
+
+  useEffect(() => {
+    dispatch(logOut());
+  }, [dispatch])
 
   return (
     token
