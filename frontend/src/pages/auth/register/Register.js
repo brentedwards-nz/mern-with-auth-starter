@@ -1,11 +1,10 @@
-import { Grid, Paper, Avatar, TextField, Typography, Button, Link } from '@mui/material'
+import { Grid, Paper, Avatar, TextField, Typography, Button, Link, CircularProgress } from '@mui/material'
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import { useDispatch, useSelector } from 'react-redux'
 
 import { validateRegisterForm } from '../../../utils/validators';
-import { register } from '../../../services/api';
 import * as styles from '../../../styles/styles.module';
 
 import { useRegisterMutation } from '../../../store/features/authApiSlice';
@@ -66,30 +65,6 @@ const Register = () => {
         setRegisterError({ isHidden: false, errorMessage: 'Login failed' })
       }
     }
-
-    // try {
-    //   const response = await register({ email: mail, password: password, firstName: firstName, secondName: secondName });
-    //   if (response.error) {
-    //     const errorMessage = response.exception?.response?.data.length
-    //       ? response.exception?.response?.data
-    //       : "Server failed to respond";
-    //     setRegisterError({ isHidden: false, errorMessage: errorMessage })
-    //   } else {
-    //     setRegisterError({ isHidden: true, errorMessage: "" });
-
-    //     dispatch(setCredentials({
-    //       userDetails: {
-    //         token: token,
-    //         email: mail,
-    //         firstName: firstName,
-    //         secondName: secondName
-    //       }
-    //     }))
-    //     navigate("/protected")
-    //   }
-    // } catch (err) {
-    //   setRegisterError({ isHidden: false, errorMessage: err.data })
-    // }
   }
 
   return (
@@ -180,6 +155,11 @@ const Register = () => {
         >
           Register
         </Button>
+        {isLoading &&
+          <Grid item container direction="row" justifyContent="center">
+            <CircularProgress sx={{ color: "#117e6a" }} />
+          </Grid>
+        }
         <Typography>
           <Link href="/login" underline="hover" style={styles.linkStyle}>
             Already Registered?
