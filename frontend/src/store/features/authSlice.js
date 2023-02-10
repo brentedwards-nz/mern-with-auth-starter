@@ -26,8 +26,8 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(REHYDRATE, (state, action) => {
-      state.user = action.payload.user ? action.payload.user : {}
-      state.token = action.payload?.token
+      state.user = action?.payload?.user ? action?.payload?.user : {}
+      state.token = action?.payload?.token
     });
   }
 })
