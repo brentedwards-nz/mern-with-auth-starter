@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { REHYDRATE } from 'redux-persist'
 
 const initialState = {
-  user: null,
+  user: {},
   token: null
 }
 
@@ -20,13 +20,13 @@ const authSlice = createSlice({
       state.token = userDetails.token
     },
     logOut: (state, action) => {
-      state.user = null
+      state.user = {}
       state.token = null
     }
   },
   extraReducers: (builder) => {
     builder.addCase(REHYDRATE, (state, action) => {
-      state.user = action.payload?.user
+      state.user = action.payload.user ? action.payload.user : {}
       state.token = action.payload?.token
     });
   }
