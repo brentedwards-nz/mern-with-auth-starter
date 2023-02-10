@@ -1,14 +1,14 @@
 import { Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux'
-import { resetUserDetailsRedux } from '../../../store/features/userDetailsSlice'
+import { logOut, selectCurrentToken } from '../../../store/features/authSlice';
 
 const Logout = () => {
-  const isLoggedIn = useSelector(state => state.userdetails.isLoggedIn)
+  const token = useSelector(selectCurrentToken)
   const dispatch = useDispatch();
-  dispatch(resetUserDetailsRedux());
+  dispatch(logOut());
 
   return (
-    isLoggedIn
+    token
       ? <h2>Logging out...</h2>
       : <Navigate to="/login" />
   )

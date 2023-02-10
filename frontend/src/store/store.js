@@ -1,5 +1,4 @@
 import { configureStore } from '@reduxjs/toolkit'
-import userDetailsReducer from './features/userDetailsSlice'
 import authReducer from './features/authSlice'
 import { apiSlice } from "../services/apiSlice"
 import storage from 'redux-persist/lib/storage';
@@ -19,7 +18,6 @@ const persistedReducer = persistReducer(persistConfig, authReducer)
 
 const store = configureStore({
   reducer: {
-    userdetails: userDetailsReducer,
     auth: authReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
     persisted: persistedReducer,

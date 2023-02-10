@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { REHYDRATE } from 'redux-persist'
 
 const initialState = {
   user: null,
@@ -11,11 +12,6 @@ const authSlice = createSlice({
   reducers: {
     setCredentials: (state, action) => {
       const { userDetails } = action.payload
-      console.table(userDetails)
-      console.log(userDetails.email)
-      console.log(userDetails.firstName)
-      console.log(userDetails.secondName)
-      console.log(userDetails.token)
       state.user = {
         email: userDetails.email,
         firstName: userDetails.firstName,
@@ -27,6 +23,12 @@ const authSlice = createSlice({
       state.user = null
       state.token = null
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REHYDRATE, (state, action) => {
+      state.user = action.payload.user
+      state.token = action.payload.token
+    });
   }
 })
 
@@ -35,3 +37,21 @@ export default authSlice.reducer
 
 export const selectCurrentToken = (state) => state.auth.token
 export const selectCurrentUser = (state) => state.auth.user
+
+
+
+// import { createSlice } from '@reduxjs/toolkit'
+// import { REHYDRATE } from 'redux-persist'
+
+// const accessControl = createSlice({
+//   name: 'accessControl',
+//   initialState,
+//   reducers: {
+//     ...
+//   },
+//   extraReducers: (builder) => {
+//     builder.addCase(REHYDRATE, (state) => {
+//       console.log('in rehydrate')
+//     });
+//   }
+// })

@@ -2,14 +2,13 @@ import { Grid, Paper, Avatar, TextField, Typography, Button, Link, CircularProgr
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { validateLoginForm } from '../../../utils/validators';
-import useAuth from '../../../hooks/useUserDetails';
 import * as styles from '../../../styles/styles.module';
 
 import { useLoginMutation } from '../../../store/features/authApiSlice';
-import { setCredentials } from '../../../store/features/authSlice';
+import { setCredentials, selectCurrentToken } from '../../../store/features/authSlice';
 
 const Login = () => {
   const [canSubmit, setCanSubmit] = useState(false);
@@ -18,16 +17,16 @@ const Login = () => {
   const [loginError, setLoginError] = useState({ isHidden: true, errorMessage: "" })
 
   const navigate = useNavigate();
-  const [userDetails,] = useAuth()
 
+  const token = useSelector(selectCurrentToken)
   const [login, { isLoading }] = useLoginMutation()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (userDetails?.isLoggedIn) {
+    if (token) {
       navigate("/protected")
     }
-  }, [userDetails, navigate])
+  }, [token, navigate])
 
   useEffect(() => {
     setCanSubmit(
@@ -53,7 +52,7 @@ const Login = () => {
       if (!err?.originalStatus) {
         setLoginError({ isHidden: false, errorMessage: 'No Server Response' })
       } else if (err.originalStatus === 400) {
-        setLoginError({ isHidden: false, errorMessage: 'Missing Username or Password' })
+        setLoginError({ isHidden: false, errorMessage: 'Username or Password Incorrect' })
       } else if (err.originalStatus === 401) {
         setLoginError({ isHidden: false, errorMessage: 'Unauthorized' })
       } else {

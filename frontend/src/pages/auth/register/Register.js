@@ -2,11 +2,14 @@ import { Grid, Paper, Avatar, TextField, Typography, Button, Link } from '@mui/m
 import { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import { useDispatch, useSelector } from 'react-redux'
 
 import { validateRegisterForm } from '../../../utils/validators';
 import { register } from '../../../services/api';
-import useUserDetails from '../../../hooks/useUserDetails';
 import * as styles from '../../../styles/styles.module';
+
+import { useRegisterMutation } from '../../../store/features/authApiSlice';
+import { setCredentials, selectCurrentToken } from '../../../store/features/authSlice';
 
 const Register = () => {
   const [canSubmit, setCanSubmit] = useState(false);
@@ -16,14 +19,17 @@ const Register = () => {
   const [firstName, setFirstName] = useState("");
   const [secondName, setSecondName] = useState("");
   const [registerError, setRegisterError] = useState({ isHidden: true, errorMessage: "" })
-  const [userDetails, setUserDetails] = useUserDetails()
+
+  const token = useSelector(selectCurrentToken);
+  const dispatch = useDispatch();
+  const [register, { isLoading }] = useRegisterMutation()
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (userDetails?.isLoggedIn) {
+    if (token) {
       navigate("/protected")
     }
-  }, [userDetails, navigate])
+  }, [token, navigate])
 
   useEffect(() => {
     setCanSubmit(
@@ -46,26 +52,44 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const response = await register({ email: mail, password: password, firstName: firstName, secondName: secondName });
-      if (response.error) {
-        const errorMessage = response.exception?.response?.data.length
-          ? response.exception?.response?.data
-          : "Server failed to respond";
-        setRegisterError({ isHidden: false, errorMessage: errorMessage })
-        setUserDetails({ isLoggedIn: false });
-      } else {
-        setRegisterError({ isHidden: true, errorMessage: "" });
-        setUserDetails({
-          isLoggedIn: true,
-          email: mail,
-          firstName: firstName,
-          secondName: secondName
-        });
-      }
+      const userData = await register({ email: mail, password: password, firstName: firstName, secondName: secondName }).unwrap()
+      dispatch(setCredentials({ ...userData }))
+      navigate("/protected")
     } catch (err) {
-      setRegisterError({ isHidden: false, errorMessage: err.data })
-      setUserDetails({ isLoggedIn: false });
+      if (!err?.originalStatus) {
+        setRegisterError({ isHidden: false, errorMessage: 'No Server Response' })
+      } else if (err.originalStatus === 400) {
+        setRegisterError({ isHidden: false, errorMessage: 'Username or Password Incorrect' })
+      } else if (err.originalStatus === 401) {
+        setRegisterError({ isHidden: false, errorMessage: 'Unauthorized' })
+      } else {
+        setRegisterError({ isHidden: false, errorMessage: 'Login failed' })
+      }
     }
+
+    // try {
+    //   const response = await register({ email: mail, password: password, firstName: firstName, secondName: secondName });
+    //   if (response.error) {
+    //     const errorMessage = response.exception?.response?.data.length
+    //       ? response.exception?.response?.data
+    //       : "Server failed to respond";
+    //     setRegisterError({ isHidden: false, errorMessage: errorMessage })
+    //   } else {
+    //     setRegisterError({ isHidden: true, errorMessage: "" });
+
+    //     dispatch(setCredentials({
+    //       userDetails: {
+    //         token: token,
+    //         email: mail,
+    //         firstName: firstName,
+    //         secondName: secondName
+    //       }
+    //     }))
+    //     navigate("/protected")
+    //   }
+    // } catch (err) {
+    //   setRegisterError({ isHidden: false, errorMessage: err.data })
+    // }
   }
 
   return (
