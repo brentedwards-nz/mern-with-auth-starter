@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from 'react-router-dom';
-
-import useUserDetails from '../hooks/useUserDetails';
+import { useSelector } from 'react-redux';
+import { selectCurrentToken } from '../store/features/authSlice'
 
 const RequireAuth = () => {
-  const [userDetails] = useUserDetails();
+  const token = useSelector(selectCurrentToken)
   return (
-    userDetails?.isLoggedIn
+    token
       ? <Outlet />
       : <Navigate to="/unauthorised" />
   )

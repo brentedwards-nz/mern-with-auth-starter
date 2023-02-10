@@ -1,16 +1,14 @@
-import useUserDetails from "../../../hooks/useUserDetails"
 import { Navigate } from 'react-router-dom';
-import { useEffect } from "react";
+import { useDispatch, useSelector } from 'react-redux'
+import { resetUserDetailsRedux } from '../../../store/features/userDetailsSlice'
 
 const Logout = () => {
-  const [userDetails, setUserDetails] = useUserDetails();
+  const isLoggedIn = useSelector(state => state.userdetails.isLoggedIn)
+  const dispatch = useDispatch();
+  dispatch(resetUserDetailsRedux());
 
-  useEffect(() => {
-    setUserDetails({});
-  }, [setUserDetails]);
-  
   return (
-    userDetails?.isLoggedIn
+    isLoggedIn
       ? <h2>Logging out...</h2>
       : <Navigate to="/login" />
   )

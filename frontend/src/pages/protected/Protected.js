@@ -1,11 +1,12 @@
 import React from 'react'
 import { Grid, Paper, Avatar, Typography, Link } from '@mui/material'
-import useUserDetails from '../../hooks/useUserDetails';
+import { useSelector } from 'react-redux';
 import * as styles from '../../styles/styles.module';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { selectCurrentUser } from '../../store/features/authSlice'
 
 function Protected() {
-  const [userDetails] = useUserDetails();
+  const userDetails = useSelector(selectCurrentUser)
 
   return (
     <Grid>

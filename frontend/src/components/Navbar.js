@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -13,44 +13,52 @@ import Toolbar from '@mui/material/Toolbar';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { Link } from "react-router-dom";
 import { Button } from '@mui/material';
+import { useSelector } from 'react-redux'
 
-import useUserDetails from '../hooks/useUserDetails';
-import React from 'react';
+import { selectCurrentToken } from '../store/features/authSlice'
 
 const drawerWidth = 240;
 const navItems = [
-  { label: 'Home', to: "/" },
+  { label: 'Home', to: "/home" },
   { label: 'Protected', to: "/protected" },
 ];
 
 const NavBar = (props) => {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [drawer, setDrawer] = useState('<></>');
+  const isLoggedIn = useSelector(selectCurrentToken);
 
-  const [userDetails] = useUserDetails();
+  const handleDrawerToggle = useCallback(
+    () => {
+      setMobileOpen(!mobileOpen);
+    }, [mobileOpen]
+  );
 
   useEffect(() => {
-    setIsLoggedIn(userDetails?.isLoggedIn);
-  }, [userDetails])
-
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
-
-  const drawer = (
-    <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
-      <List>
-        {navItems.map((item) => (
-          <ListItem key={item.label} disablePadding>
-            <ListItemButton sx={{ textAlign: 'center' }} component={Link} to={item?.to}>
-              <ListItemText primary={item?.label} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+    const drawerHTML = (
+      <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center' }}>
+        <List>
+          {navItems.map((item) => (
+            <ListItem key={item.label} disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }} component={Link} to={item?.to}>
+                <ListItemText primary={item?.label} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+          {
+            isLoggedIn &&
+            <ListItem key="Logout" disablePadding>
+              <ListItemButton sx={{ textAlign: 'center' }} component={Link} to="/logout">
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </ListItem>
+          }
+        </List>
+      </Box>
+    );
+    setDrawer(drawerHTML)
+  }, [isLoggedIn, handleDrawerToggle])
 
   const container = window !== undefined ? () => window().document.body : undefined;
 
@@ -81,12 +89,15 @@ const NavBar = (props) => {
               </Button>
             ))}
           </Box>
-
           {
-            isLoggedIn
-              ? <Button color="inherit" component={Link} to="/logout" sx={{ display: { xs: 'none', sm: 'block' } }}>Logout</Button>
-              : <Button color="inherit" component={Link} to="/login" sx={{ display: { xs: 'none', sm: 'block' } }}> Login</Button>
-
+            isLoggedIn &&
+            <Button
+              color="inherit"
+              component={Link}
+              to="/logout"
+              sx={{ display: { xs: 'none', sm: 'block' } }}>
+              Logout
+            </Button>
           }
         </Toolbar>
       </AppBar>

@@ -1,11 +1,12 @@
 import React from 'react'
 import { Grid, Paper, Avatar, Typography, Link } from '@mui/material'
-import useUserDetails from '../../hooks/useUserDetails';
 import * as styles from '../../styles/styles.module';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import { useSelector } from 'react-redux';
+import { selectCurrentUser } from '../../store/features/authSlice'
 
 function Home() {
-  const [userDetails] = useUserDetails();
+  const userDetails = useSelector(selectCurrentUser)
   return (
     <Grid>
       <Paper elevation={0} style={styles.protectedPage.paperStyle}>
