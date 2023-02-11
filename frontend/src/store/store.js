@@ -18,8 +18,8 @@ const persistedReducer = persistReducer(persistConfig, authReducer)
 
 const store = configureStore({
   reducer: {
-    auth: authReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
+    auth: authReducer,
     persisted: persistedReducer,
   },
   middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })

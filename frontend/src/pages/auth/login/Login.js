@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { validateLoginForm } from '../../../utils/validators';
 import * as styles from '../../../styles/styles.module';
 
-import { useLoginMutation } from '../../../store/features/authApiSlice';
+import { useLoginMutation } from '../../../store/features/apiAuthSlice';
 import { setCredentials, selectCurrentToken } from '../../../store/features/authSlice';
 
 const Login = () => {

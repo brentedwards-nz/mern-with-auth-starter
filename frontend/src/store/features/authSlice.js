@@ -37,21 +37,3 @@ export default authSlice.reducer
 
 export const selectCurrentToken = (state) => state.auth.token
 export const selectCurrentUser = (state) => state.auth.user
-
-
-
-// import { createSlice } from '@reduxjs/toolkit'
-// import { REHYDRATE } from 'redux-persist'
-
-// const accessControl = createSlice({
-//   name: 'accessControl',
-//   initialState,
-//   reducers: {
-//     ...
-//   },
-//   extraReducers: (builder) => {
-//     builder.addCase(REHYDRATE, (state) => {
-//       console.log('in rehydrate')
-//     });
-//   }
-// })

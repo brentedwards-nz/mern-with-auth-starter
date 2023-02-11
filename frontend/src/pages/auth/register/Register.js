@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { validateRegisterForm } from '../../../utils/validators';
 import * as styles from '../../../styles/styles.module';
 
-import { useRegisterMutation } from '../../../store/features/authApiSlice';
+import { useRegisterMutation } from '../../../store/features/apiAuthSlice';
 import { setCredentials, selectCurrentToken } from '../../../store/features/authSlice';
 
 const Register = () => {
